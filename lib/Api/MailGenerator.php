@@ -31,10 +31,6 @@ class MailGenerator {
 	private $text	= '';
 	private $title	= '';
 	
-	private $DKIM_domain;
-	private $DKIM_key;
-	private $DKIM_selector;
-	
 	private function _getAddress($data, $name, $secondName) {
 		
 		if(is_array($data[$name])) {
@@ -140,11 +136,16 @@ class MailGenerator {
 			}
 		}
 		
-		$mail->isHTML(true);								  // Set email format to HTML
-
+		if(isset($this->html) && strlen($this->html) > 1) {
+			$mail->isHTML(true);
+			$mail->Body = $this->html;
+		}
+										  // Set email format to HTML
+		if(isset($this->text) && strlen($this->text) > 1) {
+			$mail->AltBody = $this->text;
+		}
+		
 		$mail->Subject = $this->title;
-		$mail->Body = $this->html;
-		$mail->AltBody = $this->text;
 
 		$objDKIM = new \Api\DKIM();
 		$objDKIM->getElement($mail->From);
