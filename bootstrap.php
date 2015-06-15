@@ -22,21 +22,39 @@ $app = new \Slim\Slim(array(
 ));
 $app->{REQEST_METHOD}('/api/send', function() use ($app) {
 
-	$mailer = new \Api\MailGenerator();
-	$mailer->getRequest($app->request->{REQEST_METHOD}());
+	$requestData = array();
+	$responseData = array();
 
-	$objAuth = new \Api\Auth();
-	
-	if($objAuth->check($app->request->{REQEST_METHOD}('from'), $app->request->headers->get('SECRET_HASH'))) {
-		$res = $mailer->generateMail();
-		if($res) {
-			echo json_encode(array('ok' => 1));
-		} else {
-			echo json_encode(array('error' => 1));
-		}
+	if(!key($app->request->{REQEST_METHOD}()) != 0) {
+		array_push($requestData, $app->request->{REQEST_METHOD}());
 	} else {
-		echo json_encode(array('error' => 1));
+		$requestData = $app->request->{REQEST_METHOD}();
+		if(count($requestData) > 25) { 
+			echo json_encode(array('error' => 'Limit extended'));
+		}
 	}
+	
+	$mailer = new \Api\MailGenerator();
+	
+	foreach($requestData as $key => $oneRequestData) {
+		$mailer->getRequest($oneRequestData);
+
+		$objAuth = new \Api\Auth();
+
+		if($objAuth->check($oneRequestData['from'], $app->request->headers->get('SECRET_HASH'))) {
+			$res = $mailer->generateMail();
+			if($res) {
+				array_push($responseData, array($key => array('ok' => 1)));
+			} else {
+				array_push($responseData, array($key => array('error' => 1)));
+			}
+		} else {
+			array_push($responseData, array($key => array('error' => 1)));
+		}
+	
+	}
+	
+	echo json_encode($responseData);
 		
 });
 
