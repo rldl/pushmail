@@ -100,10 +100,12 @@ class MailGenerator {
 	 */
 	public function generateMail() {
 		
-		$mail = new PHPMailer;
+		$mail = new \PHPMailer();
+		$mail->CharSet = 'UTF-8';
 
 		$mail->From = $this->from[0];
 		$mail->FromName = $this->fromName[0];
+		
 		foreach($this->to as $key => $row) {
 			if(isset($this->toName[$key])) {
 				$mail->addAddress($row, $this->toName[$key]);
@@ -151,7 +153,7 @@ class MailGenerator {
 		$objDKIM->getElement($mail->From);
 		
 		$mail->DKIM_domain = $objDKIM->DKIM_domain;
-		$mail->DKIM_private = $_SERVER['DOCUMENT_ROOT'].'share/'.$objDKIM->DKIM_private;
+		$mail->DKIM_private = $_SERVER['DOCUMENT_ROOT'].'/share/'.$objDKIM->DKIM_private;
 		$mail->DKIM_selector = $objDKIM->DKIM_selector;
 		$mail->DKIM_passphrase = $objDKIM->DKIM_passphrase;
 		$mail->DKIM_identifier = $objDKIM->DKIM_identity;

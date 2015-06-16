@@ -16,7 +16,7 @@ require dirname(__FILE__) . '/../../lib/Api/MailGenerator.php';
 require dirname(__FILE__) . '/../../lib/Api/DKIM.php';
 require dirname(__FILE__) . '/../../lib/Api/Auth.php';
 
-define('REQEST_METHOD', 'get');
+define('REQEST_METHOD', 'post');
 
 class MyConfig {
 
@@ -25,7 +25,7 @@ class MyConfig {
 	static protected $dbHost				= "localhost";
 	static protected $dbLogin			= "root";
 	static protected $dbDatabase		= "push_mail";
-	static protected $dbPass			= "";
+	static protected $dbPass			= "root";
 	static protected $dbPort				= 3306;
 
 	static public function getValue($string) {

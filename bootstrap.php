@@ -24,8 +24,10 @@ $app->{REQEST_METHOD}('/api/send', function() use ($app) {
 
 	$requestData = array();
 	$responseData = array();
-
-	if(!key($app->request->{REQEST_METHOD}()) != 0) {
+	if($app->request->{REQEST_METHOD}('debug') == 1) {
+		var_dump($app->request->{REQEST_METHOD}());
+	}
+	if(is_string(key($app->request->{REQEST_METHOD}()))) {
 		array_push($requestData, $app->request->{REQEST_METHOD}());
 	} else {
 		$requestData = $app->request->{REQEST_METHOD}();
@@ -38,10 +40,10 @@ $app->{REQEST_METHOD}('/api/send', function() use ($app) {
 	
 	foreach($requestData as $key => $oneRequestData) {
 		$mailer->getRequest($oneRequestData);
-
+		
 		$objAuth = new \Api\Auth();
 
-		if($objAuth->check($oneRequestData['from'], $app->request->headers->get('SECRET_HASH'))) {
+		if($objAuth->check($oneRequestData['from'], $app->request->headers->get('Secret-Hash'))) {
 			$res = $mailer->generateMail();
 			if($res) {
 				array_push($responseData, array($key => array('ok' => 1)));
