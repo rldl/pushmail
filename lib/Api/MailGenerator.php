@@ -31,6 +31,10 @@ class MailGenerator {
 	private $text	= '';
 	private $title	= '';
 	
+	public function getFrom() {
+		return $this->from[0];
+	}
+
 	private function _getAddress($data, $name, $secondName) {
 		
 		if(is_array($data[$name])) {

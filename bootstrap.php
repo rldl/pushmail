@@ -27,10 +27,10 @@ $app->{REQEST_METHOD}('/api/send', function() use ($app) {
 	if($app->request->{REQEST_METHOD}('debug') == 1) {
 		var_dump($app->request->{REQEST_METHOD}());
 	}
-	if(is_string(key($app->request->{REQEST_METHOD}()))) {
-		array_push($requestData, $app->request->{REQEST_METHOD}());
+	if(is_string(key($app->request->{REQEST_METHOD}('msg')))) {
+		array_push($requestData, $app->request->{REQEST_METHOD}('msg'));
 	} else {
-		$requestData = $app->request->{REQEST_METHOD}();
+		$requestData = $app->request->{REQEST_METHOD}('msg');
 		if(count($requestData) > 25) { 
 			echo json_encode(array('error' => 'Limit extended'));
 		}
@@ -43,7 +43,7 @@ $app->{REQEST_METHOD}('/api/send', function() use ($app) {
 		
 		$objAuth = new \Api\Auth();
 
-		if($objAuth->check($oneRequestData['from'], $app->request->headers->get('Secret-Hash'))) {
+		if($objAuth->check($mailer->getFrom(), $app->request->headers->get('Secret-Hash'))) {
 			$res = $mailer->generateMail();
 			if($res) {
 				array_push($responseData, array($key => array('ok' => 1)));
